@@ -64,35 +64,36 @@ function Form() {
     return phoneRegex.test(phoneNumber);
   };
 
-  // Handle input change
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target;
     let updatedValue = value;
-
+  
     if (name === "panCard") {
       updatedValue = value.toUpperCase(); // Uppercase PAN card value
     }
-
+  
     setFormData((prevData) => ({ ...prevData, [name]: updatedValue }));
-
+  
     if (name === "dob") {
       const calculatedAge = calculateAge(value);
       setFormData((prevData) => ({ ...prevData, dob: value, age: calculatedAge }));
     }
   };
+  
 
   // Validate form data
   const validate = () => {
     const newErrors = { ...errors };
 
-    // Validate required fields
-    Object.keys(formData).forEach((key: keyof typeof formData) => {
-      if (!formData[key]) {
-        newErrors[key] = `${key.charAt(0).toUpperCase() + key.slice(1)} is required`;
-      } else {
-        newErrors[key] = ""; // Reset the error if the field is filled
-      }
-    });
+ // Validate required fields
+Object.keys(formData).forEach((key) => {
+  const typedKey = key as keyof typeof formData; // Assert key to the correct type
+  if (!formData[typedKey]) {
+    newErrors[typedKey] = `${typedKey.charAt(0).toUpperCase() + typedKey.slice(1)} is required`;
+  } else {
+    newErrors[typedKey] = ""; // Reset the error if the field is filled
+  }
+});
 
     // Additional custom validations
     if (formData.firstName && !/^[a-zA-Z\s]+$/.test(formData.firstName)) {
